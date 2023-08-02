@@ -18,6 +18,25 @@
         border-radius: 10px;
         width: 100px;
     }
+
+    #products-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        
+    }
+
+    .product {
+        border: 1px solid transparent;
+        padding: 2%;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    .product:hover {
+        transition: 1s;
+        border: 1px solid red;
+    }
 </style>
 
 <body>
@@ -39,7 +58,9 @@
                 <button class="btn btn-primary">Create</button>
             </form>
         </div>
-        
+        <div id="products-container">
+
+        </div>
     </main>
     <script src="./app.js"></script>
 </body>

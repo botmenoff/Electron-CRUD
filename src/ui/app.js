@@ -2,6 +2,7 @@
 const { ipcRenderer } = require('electron');
 
 // Cojer los valores de los inputs con delegacion de eventos
+const productContainer = document.getElementById('products-container')
 const productForm = document.getElementById('productForm')
 const error = document.getElementsByClassName('error')[0]
 error.style.display = 'none'
@@ -78,12 +79,17 @@ productForm.addEventListener('click', (event) => {
 
 //---------------------------------------------------------------------------------------------------------------------
 // READ
-let results
 ipcRenderer.invoke('get-products')
     .then((result) => {
-        console.log("Resultados de la consulta");
+        // Show them in the screen
         console.log(result);
+        // Insert all the items of the list
+        for (let i = 0; i < result.length; i++) {
+            let item = '<div class="product"><h4>Name: '+result[i].name+'</h4><br><p>Price: '+result[i].price+'</p><br><p>Description: '+result[i].description+'</p></div>'
+            productContainer.insertAdjacentHTML('beforeend', item)
+        }
     })
     .catch((error) => {
         console.error('Error invoking get-products:', error);
     });
+
