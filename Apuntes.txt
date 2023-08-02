@@ -1,0 +1,12 @@
+En Electron, el ipcRenderer es una herramienta que nos permite comunicarnos entre el proceso principal (main) y los procesos del renderizado (renderer) en este caso el main.js con el app.js
+Como usarlo: 
+1.Primero, en tu proceso principal (main.js), necesitas importar el módulo ipcMain de Electron:
+const { ipcMain } = require('electron');
+2.Luego, puedes crear un canal de comunicación en el proceso principal para escuchar mensajes del proceso de renderizado. Por ejemplo, vamos a escuchar un mensaje llamado 'mensaje-de-renderizador':
+ipcMain.on('mensaje-de-renderizador', (event, arg) => {
+  console.log('Mensaje del renderizador:', arg);
+});
+3.Ahora, en tu proceso de renderizado (por ejemplo, app.js), necesitas importar el módulo ipcRenderer de Electron:
+const { ipcRenderer } = require('electron');
+4.Cuando quieras enviar un mensaje desde el proceso de renderizado al proceso principal, simplemente utiliza ipcRenderer.send y especifica el nombre del mensaje y cualquier argumento que desees enviar. Por ejemplo, enviemos un mensaje con el contenido "Hola desde el renderizador!":
+ipcRenderer.send('mensaje-de-renderizador', 'Hola desde el renderizador!');

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electron + mysql</title>
+    <link rel="stylesheet" href="./bootstrap.min.css">
+</head>
+<style>
+    .error {
+        color: red;
+        padding: 4%;
+    }
+</style>
+
+<body>
+    <main class="container-fluid">
+        <div class="col-md-6 p-4 my-auto">
+            <form class="card card-body " id="productForm">
+                <div class="form-group p-4">
+                    <input type="text" id="name" placeholder="Write the name" class="form-cotrol" autofocus>
+                </div>
+                <div class="form-group p-4">
+                    <input type="number" id="price" placeholder="Product price" class="form-cotrol" autofocus
+                        step="any">
+                </div>
+                <div class="form-group p-4">
+                    <textarea name="description" id="description" cols="20" rows="3" placeholder="Product description"
+                        class="form-cotrol"></textarea>
+                </div>
+                <p class="error">Rellena todos los campos</p>
+                <button class="btn btn-primary">Create</button>
+            </form>
+        </div>
+    </main>
+    <script src="./app.js"></script>
+    <script src="./preload.js"></script>
+</body>
+
+</html>
