@@ -1,4 +1,4 @@
-const { BrowserWindow } = require('electron')
+const { BrowserWindow, ipcMain } = require('electron')
 const { getConnection } = require('./database')
 
 async function createProduct(product) {
@@ -19,6 +19,31 @@ async function createProduct(product) {
         conn.release();
     }
 }
+
+async function getProducts(){
+    const conn = await getConnection()
+    try {
+        const resultado = await conn.query('SELECT * FROM productos')
+        return resultado
+    } catch (error) {
+        console.error(error);
+        return false
+    } finally {
+        conn.release();
+    }
+}
+
+// Escuchar al IPC para del app.js
+ipcMain.handle('create-product', async (event, product) => {
+    const result = await createProduct(product);
+    return result;
+});
+
+// Escuchar al IPC para del app.js
+ipcMain.handle('get-products', async (event) => {
+    const result = await getProducts();
+    return result;
+});
 
 let window
 
@@ -41,5 +66,6 @@ function createWindow() {
 // Exportamos la funcion
 module.exports = {
     createWindow,
-    createProduct
+    createProduct,
+    getProducts
 }

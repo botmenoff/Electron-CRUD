@@ -1,6 +1,5 @@
 // Para acceder a las funciones del main
-const { requireMain } = window.electronAPI;
-const mainProcess = requireMain('../main.js');
+const { ipcRenderer } = require('electron');
 
 // Cojer los valores de los inputs con delegacion de eventos
 const productForm = document.getElementById('productForm')
@@ -12,6 +11,9 @@ error.style.display = 'none'
 // const main = remote.require('../main')
 // main.createProduct()
 
+
+//---------------------------------------------------------------------------------------------------------------------
+// CREATE
 // Declaramos las variables para poder grardar el valor luego
 let productName
 let productPrice
@@ -55,10 +57,33 @@ productForm.addEventListener('click', (event) => {
             newProduct.price = productPrice
             newProduct.description = productDescription
             // Funcion del main para crear un producto nuevo
-            const result = mainProcess.createProduct(newProduct);
-            console.log(result);
-            
+            // Send an IPC message to the main process to call the createProduct function
+            ipcRenderer.invoke('create-product', newProduct)
+                .then((result) => {
+                    if (result) {
+                        // Se ha creado el producto
+                        console.log('Product inserted successfully.');
+                    } else {
+                        // Ha havido un error al crear el producto
+                        console.error('Failed to insert product.');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error invoking create-product:', error);
+                });
         }
         //console.log("Resultados: [Nombre]: ", productName, "[Precio]: ", productPrice, "[Descripcion]: ", productDescription);
     }
 });
+
+//---------------------------------------------------------------------------------------------------------------------
+// READ
+let results
+ipcRenderer.invoke('get-products')
+    .then((result) => {
+        console.log("Resultados de la consulta");
+        console.log(result);
+    })
+    .catch((error) => {
+        console.error('Error invoking get-products:', error);
+    });
