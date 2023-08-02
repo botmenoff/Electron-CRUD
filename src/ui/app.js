@@ -64,6 +64,7 @@ productForm.addEventListener('click', (event) => {
                     if (result) {
                         // Se ha creado el producto
                         console.log('Product inserted successfully.');
+                        window.location.reload()
                     } else {
                         // Ha havido un error al crear el producto
                         console.error('Failed to insert product.');
@@ -85,7 +86,7 @@ ipcRenderer.invoke('get-products')
         console.log(result);
         // Insert all the items of the list
         for (let i = 0; i < result.length; i++) {
-            let item = '<div class="product"><h4>Name: '+result[i].name+'</h4><br><p>Price: '+result[i].price+'</p><br><p>Description: '+result[i].description+'</p></div>'
+            let item = '<div class="product"><h4>Name: '+result[i].name+'</h4><br><p>Price: '+result[i].price+'</p><br><p>Description: '+result[i].description+'</p><br><button class="delete-product">X</button></div>'
             productContainer.insertAdjacentHTML('beforeend', item)
         }
     })
