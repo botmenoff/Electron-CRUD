@@ -13,6 +13,12 @@
         padding: 4%;
     }
 
+    .error-update {
+        color: red;
+        padding: 4%;
+        display: none;
+    }
+
     .modal {
         background-color: gray;
         border-radius: 10px;
@@ -23,23 +29,42 @@
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         grid-template-rows: repeat(3, 1fr);
-        
+
     }
 
-    .product {
+    #product-hover {
         border: 1px solid transparent;
         padding: 2%;
         border-radius: 10px;
         cursor: pointer;
     }
 
-    .product:hover {
+    #product-hover:hover {
         transition: 1s;
         border: 1px solid red;
     }
 
     .delete-product {
         background-color: red;
+    }
+
+    /* Update form */
+    /* Center the form container (update-modal) on the screen */
+    #update-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        /* Set a high z-index to appear on top */
+    }
+
+    .error {
+        display: none;
     }
 </style>
 
@@ -63,7 +88,25 @@
             </form>
         </div>
         <div id="products-container">
-
+        </div>
+        <div id="update-modal">
+            <form class="card card-body " id="updateProduct-form">
+                <input type="hidden">
+                <div class="form-group p-4">
+                    <input type="text" id="name" placeholder="Write the name" class="form-cotrol" autofocus>
+                </div>
+                <div class="form-group p-4">
+                    <input type="number" id="price" placeholder="Product price" class="form-cotrol" autofocus
+                        step="any">
+                </div>
+                <div class="form-group p-4">
+                    <textarea name="description" id="description" cols="20" rows="3" placeholder="Product description"
+                        class="form-cotrol"></textarea>
+                </div>
+                <p class="error-update">Rellena todos los campos</p>
+                <button class="btn btn-primary update-btn">Update</button>
+                <button id="close-modal">X</button>
+            </form>
         </div>
     </main>
     <script src="./app.js"></script>

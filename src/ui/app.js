@@ -4,7 +4,12 @@ const { ipcRenderer } = require('electron');
 // Cojer los valores de los inputs con delegacion de eventos
 const productContainer = document.getElementById('products-container')
 const productForm = document.getElementById('productForm')
+const productsContainer = document.getElementById('products-container')
 const error = document.getElementsByClassName('error')[0]
+const errorUpdate = document.getElementsByClassName('error-update')[0]
+const updateModal = document.getElementById('update-modal')
+const closeModal = document.getElementById('close-modal')
+const updateForm = document.getElementById('updateProduct-form')
 error.style.display = 'none'
 
 // Esta linea de código nos permite juntar lo del proceso principal con lo del frontend (app.js con el main.js)
@@ -12,6 +17,7 @@ error.style.display = 'none'
 // const main = remote.require('../main')
 // main.createProduct()
 
+updateModal.style.display = 'none'
 
 //---------------------------------------------------------------------------------------------------------------------
 // CREATE
@@ -86,7 +92,7 @@ ipcRenderer.invoke('get-products')
         console.log(result);
         // Insert all the items of the list
         for (let i = 0; i < result.length; i++) {
-            let item = '<div class="product"><h4>Name: '+result[i].name+'</h4><br><p>Price: '+result[i].price+'</p><br><p>Description: '+result[i].description+'</p><br><button class="delete-product">X</button></div>'
+            let item = '<div id="product-hover" class="product" product-id='+result[i].id+'><h4 class="product" product-id='+result[i].id+'>Name: '+result[i].name+'</h4><br><p class="product" product-id='+result[i].id+'>Price: '+result[i].price+'€</p><br><p class="product" product-id='+result[i].id+'>Description: '+result[i].description+'</p><br><button class="delete-product">X</button></div>'
             productContainer.insertAdjacentHTML('beforeend', item)
         }
     })
@@ -94,3 +100,64 @@ ipcRenderer.invoke('get-products')
         console.error('Error invoking get-products:', error);
     });
 
+
+//---------------------------------------------------------------------------------------------------------------------
+// UPDATE
+
+// Add and event listener to each product
+productsContainer.addEventListener('click', (event) => {
+    if (event.target.classList.contains('product')) {
+        // Show update modal
+        updateModal.style.display = 'block'
+        updateModal.setAttribute('product-id', event.target.getAttribute("product-id"))
+    }
+});
+
+closeModal.addEventListener('click', (event) => {
+    updateModal.style.display = 'none'
+})
+
+// Guardamos los valores de los inputs en las variables
+updateForm.addEventListener('input', (event) => {
+    const target = event.target;
+
+    switch (target.id) {
+        case "name":
+            productName = target.value
+            break;
+        case "price":
+            productPrice = target.value
+            break;
+        case "description":
+            productDescription = target.value
+            break;
+    }
+});
+
+updateForm.addEventListener('click', (event) => {
+    const target = event.target;
+    // Miramos si lo que se ha clicado es el botón
+    if (event.target.classList.contains('update-btn')) {
+        event.preventDefault();
+        // Make the update
+        if (productName === undefined || productPrice === undefined || productDescription === undefined || productName === '' || productPrice === '' || productDescription === '') {
+            // alert('Todos los campos deben de ser rellenados')
+            errorUpdate.style.display = 'block'
+        } else {
+            errorUpdate.style.display = 'none'
+            newProduct.name = productName
+            newProduct.price = productPrice
+            newProduct.description = productDescription
+            // Funcion del main para crear un producto nuevo
+            console.log(updateModal.getAttribute('product-id'));
+            ipcRenderer.invoke('update-products', parseInt(updateModal.getAttribute('product-id')), newProduct)
+                .then((result) => {
+                    console.log('Product updated successfully.');
+                    window.location.reload()
+                })
+                .catch((error) => {
+                    console.error('Error invoking create-product:', error);
+                });
+        }
+    }
+});
