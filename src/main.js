@@ -51,6 +51,25 @@ async function updateProduct(productId, updatedProduct) {
     }
 }
 
+async function deleteProduct(productId) {
+    try {
+        // Delete the product from the 'productos' table
+        const [rowsAffected] = await conn.query('DELETE FROM productos WHERE id = ?', productId);
+
+        // 'rowsAffected' will contain the number of rows deleted
+        if (rowsAffected > 0) {
+            console.log('Product deleted successfully.');
+            return true;
+        } else {
+            console.log('No product found with the given ID.');
+            return false;
+        }
+    } catch (error) {
+        console.error('Error deleting product:', error);
+        return false;
+    }
+}
+
 // Escuchar al IPC para del app.js
 ipcMain.handle('create-product', async (event, product) => {
     const result = await createProduct(product);
@@ -68,6 +87,13 @@ ipcMain.handle('update-products', async (event, productId, updatedProduct) => {
     const result = await updateProduct(productId, updatedProduct);
     return result;
 });
+
+// Escuchar al IPC para del app.js
+ipcMain.handle('delete-product', async (event, productId) => {
+    const result = await deleteProduct(productId);
+    return result;
+});
+
 
 let window
 
@@ -89,7 +115,5 @@ function createWindow() {
 
 // Exportamos la funcion
 module.exports = {
-    createWindow,
-    createProduct,
-    getProducts
+    createWindow
 }

@@ -92,7 +92,7 @@ ipcRenderer.invoke('get-products')
         console.log(result);
         // Insert all the items of the list
         for (let i = 0; i < result.length; i++) {
-            let item = '<div id="product-hover" class="product" product-id='+result[i].id+'><h4 class="product" product-id='+result[i].id+'>Name: '+result[i].name+'</h4><br><p class="product" product-id='+result[i].id+'>Price: '+result[i].price+'€</p><br><p class="product" product-id='+result[i].id+'>Description: '+result[i].description+'</p><br><button class="delete-product">X</button></div>'
+            let item = '<div id="product-hover" class="product" product-id=' + result[i].id + '><h4 class="product" product-id=' + result[i].id + '>Name: ' + result[i].name + '</h4><br><p class="product" product-id=' + result[i].id + '>Price: ' + result[i].price + '€</p><br><p class="product" product-id=' + result[i].id + '>Description: ' + result[i].description + '</p><br><button class="delete-product" product-id=' + result[i].id + '>X</button></div>'
             productContainer.insertAdjacentHTML('beforeend', item)
         }
     })
@@ -102,7 +102,7 @@ ipcRenderer.invoke('get-products')
 
 
 //---------------------------------------------------------------------------------------------------------------------
-// UPDATE
+// UPDATE && DELETE
 
 // Add and event listener to each product
 productsContainer.addEventListener('click', (event) => {
@@ -110,6 +110,16 @@ productsContainer.addEventListener('click', (event) => {
         // Show update modal
         updateModal.style.display = 'block'
         updateModal.setAttribute('product-id', event.target.getAttribute("product-id"))
+    // DELETE
+    } else if (event.target.classList.contains('delete-product')) {
+        ipcRenderer.invoke('delete-product', parseInt(event.target.getAttribute('product-id')))
+            .then((result) => {
+                console.log('Product deleted successfully.');
+                window.location.reload()
+            })
+            .catch((error) => {
+                console.error('Error invoking delete-product:', error);
+            });
     }
 });
 
